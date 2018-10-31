@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Used to fetch data for the rest of this project",
+  "main": "billboard.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "billboard-top-100": "^2.1.1",
+    "moment": "^2.22.2"
+  }
+}
