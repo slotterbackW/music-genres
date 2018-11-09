@@ -4,16 +4,16 @@
     fetchAllData() -> Fetches every chart on the billboard hot 100 since August 9th, 1958
     fetchFromDay(date) -> Fetches every chart on the billboard hot 100 since the date specified
     fetchSpecificDate(date) -> Fetches a single chart for the specified date
-    updateData() -> Updates the songs.txt file to include new billboard data
+    updateData() -> Updates the songs.txt file to include new billboard data (TODO)
 */
 
 // REQUIRED LIBRARIES
 /*
   Library used to gather results from the billboard hot 100.
   Fetches the actual html for each chart and scrapes the data on that page.
-  https://github.com/darthbatman/billboard-top-100
+  Forked from https://github.com/darthbatman/billboard-top-100
 */
-const Billboard = require("billboard-top-100")
+const Billboard = require("./billboard-top-100/billboard-top-100")
 /*
   Javascript Library used for dealing with dates. Useful since we want to fetch
   the billboard chart from every week since 1958.
@@ -30,6 +30,8 @@ const fs = require("fs")
 const STARTING_DAY = '1958-08-09'
 // Output path to write resulting file to
 const OUTPUT_PATH ='./../data/songs.txt'
+// Character to divide results on
+const DELIMITER = '|'
 
 // A convenience method to add one week to a date
 // input: date
@@ -71,7 +73,7 @@ const fetchHot100 = (date, filestream) => {
         numTries = 0
         // Write each song to the file at OUTPUT_PATH
         songs.forEach(song => {
-          let line = `${date},${song.title},${song.artist},${song.rank}`
+          let line = `${date}${DELIMITER}${song.title}${DELIMITER}${song.artist}${DELIMITER}${song.rank}`
           filestream.write(line + "\n")
         })
         console.log(`Songs for ${date} successfully written!`)
@@ -106,7 +108,7 @@ const fetchHot100FromDate = (date, filestream) => {
         } else {
           numTries = 0
           missedWeeks.push(date)
-          fetchHot100(addOneWeek(date), filestream)
+          fetchHot100FromDate(addOneWeek(date), filestream)
         }
       // Otherwise the songs for this week were successfully fetched
       } else {
@@ -114,12 +116,12 @@ const fetchHot100FromDate = (date, filestream) => {
         numTries = 0
         // Write each song to the file at OUTPUT_PATH
         songs.forEach(song => {
-          let line = `${date},${song.title},${song.artist},${song.rank}`
+          let line = `${date}${DELIMITER}${song.title}${DELIMITER}${song.artist}${DELIMITER}${song.rank}`
           filestream.write(line + "\n")
         })
         console.log(`Songs for ${date} successfully written!`)
         // call fetchHot100 with next week
-        fetchHot100(addOneWeek(date), filestream)
+        fetchHot100FromDate(addOneWeek(date), filestream)
       }
     })
   } else {
@@ -141,7 +143,7 @@ const newFilestream = () => fs.createWriteStream(OUTPUT_PATH, {flags:'a'})
 // output: none, but writes to a text file specified in the OUTPUT_PATH constant
 const fetchAllData = () => {
   const filestream = newFilestream()
-  filestream.write('Date,Title,Artist,Rank\n')
+  filestream.write(`Date${DELIMITER}Title${DELIMITER}Artist${DELIMITER}Rank\n`)
   fetchHot100FromDate(STARTING_DAY, filestream)
 }
 
@@ -161,8 +163,8 @@ const fetchSpecificDate = date => {
   fetchHot100(date, filestream)
 }
 
-// Updates the songs.txt file to include new billboard data
-// useful if this file has become outdated
+// Updates the songs.txt file to include new billboard data.
+// Useful if this file has become outdated
 // input: none
 // output: none, but writes to a text file specified in the OUTPUT_PATH constant
 const updateData = () => {

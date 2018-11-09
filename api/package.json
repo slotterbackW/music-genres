@@ -1,13 +1,14 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "Used to fetch data for the rest of this project",
+  "description": "",
   "main": "billboard.js",
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "billboard-top-100": "^2.1.1",
     "moment": "^2.22.2"
   }
 }
