@@ -11,7 +11,7 @@ def whole_replace(str, match, new_str):
             new_word.append(new_str)
         else:
             new_word.append(word)
-    return ''.join(new_word)
+    return ' '.join(new_word)
 
 
 # Splits a string based on a series of lowercase delimiters
@@ -24,7 +24,5 @@ def multi_split(str, delimiters):
     new_delimiter = '|'
     new_str = str
     for delimiter in delimiters:
-        new_str = new_str.whole_replace(delimiter, new_delimiter)
+        new_str = whole_replace(new_str, delimiter, new_delimiter)
     return [word.strip() for word in new_str.split(new_delimiter)]
-
-print(multi_split('Johnny Rocket', ['and', 'with', 'ft.', '&']))
