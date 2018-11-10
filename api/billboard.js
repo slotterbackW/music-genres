@@ -176,3 +176,4 @@ const updateData = () => {
 // Actually call the fetchHot100 function
 // NOTE: UNCOMMENT THIS TO RUN THE PROGRAM
 // fetchAllData()
+fetchFromDay('1990-10-20')
