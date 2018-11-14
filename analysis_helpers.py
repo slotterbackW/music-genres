@@ -26,3 +26,9 @@ def multi_split(str, delimiters):
     for delimiter in delimiters:
         new_str = whole_replace(new_str, delimiter, new_delimiter)
     return [word.strip() for word in new_str.split(new_delimiter)]
+
+# Takes the name of an artist which may look like "Elvis Presley and the Jordainaires"
+# and returns "Elvis Presley"
+def get_artist(raw_artist):
+    DELIMITERS = ['and', 'with', 'featuring', 'ft.', 'ft', '&', 'X']
+    return multi_split(raw_artist, DELIMITERS)[0]
