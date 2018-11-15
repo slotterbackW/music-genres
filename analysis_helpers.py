@@ -1,5 +1,3 @@
-# Analysis goes here
-
 # Replaces each instance of match in str with new_str
 # For example whole_replace("The lazy Fox", 'LAZY', 'smart') returns 'The smart Fox'
 # input: string, string, string
@@ -29,6 +27,6 @@ def multi_split(str, delimiters):
 
 # Takes the name of an artist which may look like "Elvis Presley and the Jordainaires"
 # and returns "Elvis Presley"
-def get_artist(raw_artist):
+def munge_artist(raw_artist):
     DELIMITERS = ['and', 'with', 'featuring', 'ft.', 'ft', '&', 'X']
     return multi_split(raw_artist, DELIMITERS)[0]
