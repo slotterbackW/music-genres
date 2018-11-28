@@ -1,26 +1,40 @@
-# Script to clean the artist names in ./data/songs.txt to match those in
-# ./data/Artists
+# Script to clean the artist names in ./data/songs.txt and match artists to their genres
 
-# Here we import all the song data and clean it a bit
-with open('./data/songs.txt') as original_songs:
-    songs_data = [song.strip().split('|') for song in original_songs.readlines()]
-    header = songs_data[0]
-    songs_data = songs_data[1:]
+# We'll need to import a helper function we wrote to cleanup the name of the artist
+from analysis_helpers import munge_artist, sample_dict
 
-# We need to import a custom modules
-from analysis_helpers import munge_artist
+OUTPUT_PATH = './data/full_songs.txt'
 
-# And use that module to our advantage
-for song in songs_data:
-    song[2] = munge_artist(song[2])
+def generate_artist_dict():
+    artist_genres = {}
+    with open('./data/artist_genres.txt') as artist_genres_file:
+        for rawtext in artist_genres_file.readlines():
+            row = rawtext.strip().split('|')
+            artist_genres[row[0]] = row[1]
+    return artist_genres
 
-# Now we need to write the munged song data to a new file
-with open('./data/cleaned_songs.txt', 'w') as new_songs:
-    header = '|'.join(header)
-    new_songs.write(header + '\n')
-
-    for song in songs_data:
-        song = '|'.join(song)
-        new_songs.write(song + '\n')
-
-# Wow, that was easy. We're already done!
+# Here we import all the song data
+with open('./data/songs.txt') as songs_file:
+    # Generate dictionary of artists mapped to their genres
+    artist_genres = generate_artist_dict()
+    # Open output file for writing
+    full_songs_file = open(OUTPUT_PATH, 'w')
+    # Write our header
+    full_songs_file.write('DATE|TITLE|ARTIST|RANK|GENRE\n')
+    # Begin reading the songs file
+    header = songs_file.readline().strip().split('|')
+    for rawtext in songs_file:
+        # Our data is seperated by '|' characters
+        row = rawtext.strip().split('|')
+        # Initialize the value of each row as a variable
+        date = row[0]
+        song = row[1]
+        artist = munge_artist(row[2])
+        rank = row[3]
+        genre = 'None'
+        if artist in artist_genres:
+            genre = artist_genres[artist]
+        # Remove useless data
+        if genre != 'None':
+            # And finally, write our data to the file
+            full_songs_file.write(f"{date}|{song}|{artist}|{rank}|{genre}\n")
